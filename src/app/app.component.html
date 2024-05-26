@@ -1,2 +1,8 @@
-<ng-google-oauth clientId="873847186399-4qlakhvcpncflnsfrikt1kd3lr0h20vu.apps.googleusercontent.com"
-    [gButtonConfig]="config"></ng-google-oauth>
+<ng-google-oauth 
+    [clientId]="clientId" 
+    [gButtonConfig]="gConfig" 
+    [wrapperStyle]="wrapperStyle"
+    [iconStyle]="iconStyle"
+    [text]="text"
+    (credentialEmitter)="data($event)">
+</ng-google-oauth>
