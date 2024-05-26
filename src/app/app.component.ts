@@ -1,11 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {
-  CSSProperties,
-  GButtonConfig,
-  NgGoogleOauthComponent,
-} from 'ng-google-oauth';
+import { GButtonConfig, NgGoogleOauthComponent } from 'ng-google-oauth';
 
 @Component({
   selector: 'app-root',
@@ -20,31 +16,10 @@ export class AppComponent {
 
   gConfig: GButtonConfig = {
     type: 'standard',
-    size: 'small',
-    width: 10,
+    size: 'medium',
   };
 
-  wrapperStyle: CSSProperties = {
-    backgroundColor: 'black',
-    color: 'white',
-    padding: '12px 16px',
-    borderRadius: '5px',
-    borderColor: '#00ff00',
-    borderWidth: '2px',
-    borderStyle: 'solid',
-  };
-
-  hoverStyle: CSSProperties = {
-    backgroundColor: '#0000ff',
-  };
-
-  textStyle: CSSProperties = {
-    marginLeft: '20px',
-  };
-
-  text = 'google sign in';
-
-  data(d: any) {
+  data(d: object) {
     console.log(d);
   }
 }

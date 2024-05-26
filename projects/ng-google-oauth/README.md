@@ -1,24 +1,88 @@
-# NgLibTest
+## Google OAuth Library for Simplified Google Social Sign-In
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.0.
+## Overview
+This library provides a simplified way to integrate Google OAuth for social sign-in into your Angular applications.
 
-## Code scaffolding
+## Getting Started
+To use this library:
 
-Run `ng generate component component-name --project ng-google-oauth` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ng-google-oauth`.
-> Note: Don't forget to add `--project ng-google-oauth` or else it will be added to the default project in your `angular.json` file. 
+1. **Obtain API Key on Google Console**:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+   - Create a new project or select an existing one.
+   - Navigate to the Credentials page.
+   - Create a new OAuth client ID.
+   - Choose the appropriate application type and specify the authorized redirect URI.
+   - Obtain your client ID.
 
-## Build
+2. **Installation**:
+   - Install the library using npm:
+     ```bash
+     npm i ng-google-social
+     ```
+3. **Add the following script to your `index.html` file**:
+   - ```html
+     <script src="https://accounts.google.com/gsi/client" async></script>
+     ```
 
-Run `ng build ng-google-oauth` to build the project. The build artifacts will be stored in the `dist/` directory.
+4. **Usage**:
+   - Import the `NgGoogleOauthComponent` into your Angular module.
+   - Use the component in your template with the desired configurations.
 
-## Publishing
+5. **Configuration**:
+   - Configure the button appearance by providing a `GButtonConfig` object.
+   - Customize the button type, size, shape, text, width, theme, and logo alignment according to your preferences. If no configuration object is provided, the default button type is `standard`
+   - Options:
 
-After building your library with `ng build ng-google-oauth`, go to the dist folder `cd dist/ng-google-oauth` and run `npm publish`.
+      `type?: 'icon' | 'standard'`
 
-## Running unit tests
+      `size?: 'small' | 'medium' | 'large'`
 
-Run `ng test ng-google-oauth` to execute the unit tests via [Karma](https://karma-runner.github.io).
+      `shape?: 'square' | 'circle' | 'pill' | 'rectangular'`
 
-## Further help
+      `text?: 'signin_with' | 'signup_with' | 'continue_with'`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+      `width?: number`
+
+      `theme?: 'outline' | 'filled_blue' | 'filled_black'`
+      
+      `logo_alignment?: 'left' | 'center'`
+     `
+
+## Example Usage in the App Component
+```js
+import { Component } from '@angular/core';
+import { GButtonConfig, NgGoogleOauthComponent } from 'ng-google-oauth';
+
+@Component({
+  selector: 'app-root',
+  imports: [NgGoogleOauthComponent],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  clientId = 'YOUR_CLIENT_ID'; // your client ID
+
+  /* sample google button configuration */
+  gButtonConfig: GButtonConfig = {
+    type: 'standard',
+    size: 'medium',
+  };
+
+  onCredentialEmit(credential: any) {
+    /* receives the user's credential */
+    console.log('Credential:', credential);
+  }
+}
+
+```
+
+In the template:
+
+```html
+<ng-google-oauth 
+    [clientId]="clientId" 
+    [gButtonConfig]="gButtonConfig" 
+    (credentialEmitter)="onCredentialEmit($event)"
+>
+</ng-google-oauth>
+```
