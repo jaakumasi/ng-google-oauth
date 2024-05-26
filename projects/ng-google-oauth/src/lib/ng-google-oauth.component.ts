@@ -3,10 +3,12 @@ declare let google: any;
 import { NgStyle } from '@angular/common';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnInit,
   Output,
+  ViewChild,
   inject,
 } from '@angular/core';
 import {
@@ -14,46 +16,30 @@ import {
   CustomButtonConfig,
   GButtonConfig,
 } from '../public-api';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'ng-google-oauth',
   standalone: true,
-  imports: [NgStyle],
-  template: `
-    <div
-      class="wrapper"
-      style="width: fit-content; display: flex; align-items: center;"
-      [ngStyle]="wrapperStyle ? wrapperStyle : {}"
-    >
-      <div class="g-auth" [ngStyle]="iconStyle ? iconStyle : {}"></div>
-      <div
-        [ngStyle]="textStyle ? textStyle : {}"
-        (click)="triggerGoogleSocialAuth()"
-      >
-        {{ text }}
-      </div>
-    </div>
-  `,
-  styles: [
-    `
-      .wrapper:hover {
-        cursor: text;
-      }
-    `,
-  ],
+  imports: [NgStyle, HttpClientModule],
+  templateUrl: './ng-google-oauth.template.html',
+  styleUrl: './ng-google-oauth.style.css',
 })
 export class NgGoogleOauthComponent implements OnInit {
   @Input() clientId!: string;
   @Input() gButtonConfig!: GButtonConfig;
-  @Input() wrapperStyle!: CSSProperties;
-  @Input() textStyle!: CSSProperties;
-  @Input() iconStyle!: CSSProperties;
+  @Input() wrapperStyle?: CSSProperties;
+  @Input() textStyle?: CSSProperties;
+  @Input() hoverStyle?: CSSProperties;
   @Input() isCustomButton: boolean = false;
   @Input() text = '';
   @Output() credentialEmitter = new EventEmitter<any>();
+  @ViewChild('oauth') btn!: ElementRef;
+
+  http = inject(HttpClient);
 
   ngOnInit(): void {
-    if (this.wrapperStyle || this.iconStyle || this.textStyle) {
+    if (this.wrapperStyle || this.textStyle) {
       this.gButtonConfig.type = 'icon';
     }
     this.gInit();
@@ -64,7 +50,6 @@ export class NgGoogleOauthComponent implements OnInit {
       google.accounts.id.initialize({
         client_id: this.clientId,
         use_fedcm_for_prompt: true,
-        auto_select: false,
         callback: (data: any) => this.extractPayload(data),
       });
       google.accounts.id.renderButton(
@@ -75,12 +60,23 @@ export class NgGoogleOauthComponent implements OnInit {
   }
 
   triggerGoogleSocialAuth() {
-    google.accounts.id.prompt();
+    try {
+      google.accounts.id.prompt({ select_by: 'btn' });
+    } catch (error) {}
   }
 
   extractPayload(data: any) {
     const payload = data.credential.split('.')[1];
     const decodedUser = atob(payload);
     this.credentialEmitter.emit(decodedUser);
+  }
+
+  onMouseOver() {
+    if (this.hoverStyle && this.wrapperStyle) {
+      this.wrapperStyle = {
+        ...this.wrapperStyle,
+        ...this.hoverStyle,
+      }
+    }
   }
 }
