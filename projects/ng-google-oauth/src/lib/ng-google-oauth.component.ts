@@ -51,7 +51,8 @@ export class NgGoogleOauthComponent implements OnInit {
 
   extractPayload(data: any) {
     const payload = data.credential.split('.')[1];
-    const decodedUser = atob(payload);
-    this.credentialEmitter.emit(decodedUser);
+    const decodedUserString = atob(payload);
+    const decodedUserJson = JSON.parse(decodedUserString)
+    this.credentialEmitter.emit(decodedUserJson);
   }
 }
